@@ -4,30 +4,42 @@
 //  * Defeat each enemy-robot 
 // "LOSE" - Player robot's health is zero or less 
 
-var fight = function (enemy) {
-    // repeat and execute as long as the enemy-robot is alive
-    while (playerInfo.health > 0 && enemy.health > 0) {
-    // Alert players that they are starting the round
+var fightOrSkip = function() {
+    // ask player if they'd like to fight or skip using fightOrSkip function\
     var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
-    console.log(promptFight);
 
-        // if player chooses to skip 
-    if (promptFight === "skip" || promptFight === "SKIP") {
-        // confirm player wnats to skip
+    if (promptFight === "" || promptFight === null) {
+        window.alert("You will need to provide a valid answer! Please try again.");
+        return false;
+    }
+
+    // if player picks "skip" confirm and then stop the loop
+    promptFight = promptFight.toLowerCase();
+    if (promptFight === "skip") {
+        // confirm player wants to skip
         var confirmSkip = window.confirm("Are you sure you'd like to quit?");
 
         // if yes (true), leave fight 
         if (confirmSkip) {
             window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
             // subtract money from playerMoney for skipping
-            playerInfo.money = Math.max(0, playerInfo.money - 10);
-            console.log("playerInfo.money" , playerInfo.money);
-            break;
-        }
-    }    
+            playerInfo.playerMoney = playerInfo.money - 10;
 
-        // generate random damage value based on player's attack power
+            // return true if player wnants to leave
+            return true
+
+        } shop();
+    }
+}
+
+var fight = function (enemy) {
+    // repeat and execute as long as the enemy-robot is alive
+    while (playerInfo.health > 0 && enemy.health > 0) {
+        if (fightOrSkip()) {
+            break;
+        } 
         var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
+    
         enemy.health = Math.max(0, enemy.health - damage);
 
         // Log a resulting message to the console so we know that it worked.
